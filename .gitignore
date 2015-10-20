@@ -2,5 +2,8 @@
 typings/
 node_modules/
 
+# Temporary
+tmp/
+
 # Output
 dist/

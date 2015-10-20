@@ -4,6 +4,11 @@ var source = require('vinyl-source-stream');
 var browserify = require('browserify');
 var tsify = require('tsify');
 var del = require('del');
+var fs = require('fs');
+var stream = require('stream');
+var mocha = require('gulp-mocha');
+
+var manifestData = require('./gulp/manifestData');
 	
 var config = {
 	distPath: './dist',
@@ -13,7 +18,13 @@ var config = {
 	main: 'index.ts', 
 	sourceMaps: !gutil.env.production 
 };
+
+gulp.task('test', function () {
+	require('typescript-require');
 	
+	return gulp.src(['test/**/*.ts']).pipe(mocha());
+});
+
 gulp.task('compile-js', function () {
 	var bundler = browserify({basedir: config.sourcePath})
 		.add(config.main)
@@ -25,7 +36,9 @@ gulp.task('compile-js', function () {
 });
 
 gulp.task('manifest', function () {
-	return gulp.src('./manifest.json').pipe(gulp.dest(config.distPath));
+	return gulp.src('./manifest.json')
+		.pipe(manifestData.add('./package.json'))
+		.pipe(gulp.dest(config.distPath));
 });
 
 gulp.task('resources', function () {
