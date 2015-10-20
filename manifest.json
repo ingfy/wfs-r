@@ -1,0 +1,12 @@
+{
+	"manifest_version": 2,
+	"name": "fs-r",
+	"description": "Windowed full-screen/embed various things on the Internet! Supports: YouTube",
+	"version": "1.0",
+	"browser_action": {
+		"default_icon": "resources/icon.png"
+	},
+	"permissions": [
+		"activeTab"
+	]
+}

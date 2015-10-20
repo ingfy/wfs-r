@@ -1,0 +1,6 @@
+# Downloaded dependencies
+typings/
+node_modules/
+
+# Output
+dist/
