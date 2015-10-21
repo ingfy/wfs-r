@@ -14,10 +14,14 @@ var config = {
 	distPath: './dist',
 	sourcePath: './src',
 	resourcesPath: './resources',
-	result: 'extension.js',
+	result: 'background.js',
 	main: 'index.ts', 
 	sourceMaps: !gutil.env.production 
 };
+
+
+gulp.task('default', ['deploy']);
+gulp.task('deploy', ['clean', 'manifest', 'resources', 'compile-js']);
 
 gulp.task('test', function () {
 	require('typescript-require');
@@ -44,8 +48,6 @@ gulp.task('manifest', function () {
 gulp.task('resources', function () {
 	return gulp.src(config.resourcesPath + '/**/*').pipe(gulp.dest(config.distPath + '/resources'));
 });
-
-gulp.task('deploy', ['clean', 'manifest', 'resources', 'compile-js']);
 
 gulp.task('clean', function () {
 	return del.sync(['./dist']);

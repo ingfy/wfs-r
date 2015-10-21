@@ -31,6 +31,9 @@
     },
     "chrome/chrome.d.ts": {
       "commit": "68548c2daab053869f323d475419c693478bbb73"
+    },
+    "lodash/lodash.d.ts": {
+      "commit": "98a9440752f3f2ad7786aba1bf9bdefec818919e"
     }
   }
 }
