@@ -2,7 +2,6 @@
 
 import * as types from './types';
 import youtube from './sites/youtube';
-import * as _ from 'lodash';
 
 let availableSites : types.FsSite[] = [
 	youtube
@@ -10,14 +9,34 @@ let availableSites : types.FsSite[] = [
 
 let sites: { [id : string] : types.FsSite; }= {};
 
-function domain(url : string) : string {
+function extractDomain(url : string) : string {
 	return url.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[1];
 }
 
-function findSite(tab : chrome.tabs.Tab) : types.FsSite {
-	var siteSupports = (site: types.FsSite) => _.contains(site.domains, domain(tab.url));
+class SiteMatch {
+	tab : chrome.tabs.Tab;
+	site : types.FsSite;
 	
-	return _.find(availableSites, siteSupports);
+	constructor(site : types.FsSite, tab : chrome.tabs.Tab) {
+		this.site = site;
+		this.tab = tab;
+	}
+	
+	open() : void {
+		this.site.openFs({url : this.tab.url}, this.tab);
+	}
+}
+
+function findSite(tab : chrome.tabs.Tab) : SiteMatch {
+	var tabDomain = extractDomain(tab.url);
+	
+	var siteSupports = (site: types.FsSite) => 
+		site.domains.filter(domain => domain == tabDomain).length > 0 &&
+		site.canOpenFs({url: tab.url}, tab);
+	
+	let matches = availableSites.filter(siteSupports);
+	
+	return matches.length > 0 ? new SiteMatch(matches[0], tab) : null;
 };
 
 chrome.tabs.onUpdated.addListener((tabId, __, tab) => {
@@ -29,5 +48,5 @@ chrome.tabs.onUpdated.addListener((tabId, __, tab) => {
 });
 
 chrome.pageAction.onClicked.addListener((tab) => {
-	alert("You're on " + findSite(tab) + "!");
+	findSite(tab).open();
 });

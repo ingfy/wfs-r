@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"permissions": [
-		"activeTab"
+		"tabs", "background"
 	],
 	"page_action": {
 		"default_icon": {
@@ -9,5 +9,8 @@
 			"19": "resources/icon19.png"
 		},
 		"default_title": "Open in Windowed Full-Screen mode"
+	},
+	"background": {
+		"persistent": false
 	}
 }

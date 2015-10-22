@@ -9,6 +9,46 @@ function stringContains(test : string, part : string) : boolean {
 };
 
 describe('youtube', () => {
+	describe('#canOpenFs', () => {
+		var result : boolean;
+		
+		describe('with emed url', () => {
+			beforeEach(() => {
+				var si = { url : "https://www.youtube.com/embed/I8yA7J2GMrE" };
+				
+				result = youtube.canOpenFs(si, null);
+			});
+			
+			it('should return false', () => {
+				expect(result).to.be.false;
+			});
+		});
+		
+		describe('in channel', () => {
+			beforeEach(() => {
+				var si = { url : "https://www.youtube.com/channel/UCmX7sQ4uz_Jx45ztKGrWT-g" };
+				
+				result = youtube.canOpenFs(si, null);
+			});
+			
+			it('should return false', () => {
+				expect(result).to.be.false;
+			});
+		});
+		
+		describe('in video', () => {
+			beforeEach(() => {
+				var si = { url : "https://www.youtube.com/watch?v=aXkCsvLHVxs&list=PL5d1KNNFArSPvJVHgHqWHG6VPEiPANaNU" };
+				
+				result = youtube.canOpenFs(si, null);
+			});
+			
+			it('should return true', () => {
+				expect(result).to.be.true;
+			});
+		});
+	});
+	
 	describe('#createEmbedUrl', () => {
 		var result: string;
 		var id = 'I8yA7J2GMrE';
