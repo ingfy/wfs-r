@@ -3,6 +3,9 @@
 	"permissions": [
 		"tabs", "background"
 	],
+	"icons": {
+		"128": "icon128.png"
+	},
 	"page_action": {
 		"default_icon": {
 			"38": "resources/icon38.png", 
