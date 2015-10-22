@@ -1,7 +1,7 @@
 {
   "name": "wfs-r",
   "version": "1.0.0",
-  "description": "Full-screen various video sources",
+  "description": "Full-screen various video sources. Supported: YouTube",
   "repository": {
     "type": "git",
     "url": "https://github.com/ingfy/wfs-r"
