@@ -1,6 +1,6 @@
 {
   "name": "wfs-r",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Full-screen various video sources. Supported: YouTube",
   "repository": {
     "type": "git",
@@ -8,6 +8,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
+    "setup": "npm install && tsd install",
     "test": "gulp test"
   },
   "author": "",
@@ -27,13 +28,10 @@
     "stringify": "^3.1.0",
     "through2": "^2.0.0",
     "tsify": "^0.12.2",
-    "typescript-require": "^0.2.9",
+    "typescript-require": "raymondlwong/typescript-require#fix-import-bug",
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "chai": "^3.3.0",
-    "lodash": "^3.10.1",
-    "query-string": "^3.0.0",
-    "typescript-require": "raymondlwong/typescript-require#fix-import-bug"
+    "query-string": "^3.0.0"
   }
 }

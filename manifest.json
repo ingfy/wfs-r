@@ -4,7 +4,7 @@
 		"tabs", "background"
 	],
 	"icons": {
-		"128": "icon128.png"
+		"128": "resources/icon128.png"
 	},
 	"page_action": {
 		"default_icon": {
