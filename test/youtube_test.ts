@@ -3,84 +3,26 @@ import chai = require('chai');
 var expect = chai.expect;
 
 import youtube from '../src/sites/youtube';
+import * as embedUrlSite from './embedUrlSite';
 
 function stringContains(test : string, part : string) : boolean {
 	return new RegExp("^.*" + part.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + ".*$").test(test);
 };
 
 describe('youtube', () => {
-	describe('#canOpenFs', () => {
-		var result : boolean;
-		
-		describe('with emed url', () => {
-			beforeEach(() => {
-				var si = { url : "https://www.youtube.com/embed/I8yA7J2GMrE" };
-				
-				result = youtube.canOpenFs(si, null);
-			});
-			
-			it('should return false', () => {
-				expect(result).to.be.false;
-			});
-		});
-		
-		describe('in channel', () => {
-			beforeEach(() => {
-				var si = { url : "https://www.youtube.com/channel/UCmX7sQ4uz_Jx45ztKGrWT-g" };
-				
-				result = youtube.canOpenFs(si, null);
-			});
-			
-			it('should return false', () => {
-				expect(result).to.be.false;
-			});
-		});
-		
-		describe('in video', () => {
-			beforeEach(() => {
-				var si = { url : "https://www.youtube.com/watch?v=aXkCsvLHVxs&list=PL5d1KNNFArSPvJVHgHqWHG6VPEiPANaNU" };
-				
-				result = youtube.canOpenFs(si, null);
-			});
-			
-			it('should return true', () => {
-				expect(result).to.be.true;
-			});
-		});
-	});
+	var Coft = embedUrlSite.CanOpenFsTest;
+	embedUrlSite.test_CanOpenFs(youtube, [
+		new Coft('with embed url', 'https://www.youtube.com/embed/I8yA7J2GMrE', false),
+		new Coft('on channel page', 'https://www.youtube.com/channel/UCmX7sQ4uz_Jx45ztKGrWT-g', false),
+		new Coft('in video', 'https://www.youtube.com/watch?v=aXkCsvLHVxs&list=PL5d1KNNFArSPvJVHgHqWHG6VPEiPANaNU', true)
+	]);
 	
-	describe('#createEmbedUrl', () => {
-		var result: string;
-		var id = 'I8yA7J2GMrE';
-		
-		describe('with only simple video', () => {
-			beforeEach(() => {
-				var si = { url: 'https://www.youtube.com/watch?v=' + id };
-			
-				result = youtube.createEmbedUrl(si);
-			});
-			
-			it('should contain /embed/', () => {
-				expect(result).to.contain('/embed/');
-			});
-			
-			it('should contain the video ID', () => {
-				expect(result).to.contain(id);
-			});
-		});
-		
-		describe('with a playlist', () => {
-			var listId = 'abc';
-			
-			beforeEach(() => {
-				var si = { url: 'https://www.youtube.com/watch?v=' + id + '&list=' + listId};	
-			
-				result = youtube.createEmbedUrl(si);
-			});
-			
-			it('should keep lists', () => {
-				expect(result).to.contain('list=' + listId);
-			});
-		});
-	});
+	
+	var videoId = 'I8yA7J2GMrE';
+	var listId = 'abcdefg';
+	var Ceut = embedUrlSite.CreateEmbedUrlTest; 
+	embedUrlSite.test_CreateEmbedUrl(youtube, videoId, '/embed/', [
+		new Ceut('with only simple video', `https://www.youtube.com/watch?v=${videoId}`), 
+		new Ceut('with a playlist', `https://www.youtube.com/watch?v=${videoId}&list=${listId}`, `list=${listId}`)
+	]);
 });
