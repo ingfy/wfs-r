@@ -1,14 +1,18 @@
 /// <reference path='../../typings/tsd.d.ts' />
 /// <reference path='./query-string.d.ts' />
 
-import queryString = require('query-string');
+import { parse, stringify } from 'query-string';
+import * as url from 'url';
 
-import types = require('../types');
-
+import { SiteInformation, EmbedUrlSite } from '../types';
 import { startsWith } from '../utils';
 
-function openFs(si: types.SiteInformation) {
-	var query = queryString.parse(queryString.extract(si.url));
+function getQuery(si : SiteInformation) : any {
+	return parse(url.parse(si.url).query);
+}
+
+function getEmbedUrl(si: SiteInformation) {
+	var query = getQuery(si);
 	var video = query['v'];
 	
 	if (!video && !query['list']) {
@@ -17,15 +21,15 @@ function openFs(si: types.SiteInformation) {
 	
 	delete query['v'];
 	
-	return `https://www.youtube.com/embed/${video}?${queryString.stringify(query)}`;
+	return `https://www.youtube.com/embed/${video}?${stringify(query)}`;
 }
 
-function isOpen(si : types.SiteInformation) : boolean {
-	return startsWith(si.url, "https://www.youtube.com/embed/");
+function isOpen(si : SiteInformation) : boolean {
+	return startsWith(url.parse(si.url).pathname, '/embed/');
 }
 
-function canOpen(si : types.SiteInformation) : boolean {
-	return !isOpen(si) && !!queryString.parse(queryString.extract(si.url))['v'];
+function canOpen(si : SiteInformation) : boolean {
+	return !isOpen(si) && !!getQuery(si)['v'];
 };
 
-export default new types.EmbedUrlSite("YouTube", ["www.youtube.com"], openFs, canOpen);
+export default new EmbedUrlSite('YouTube', ['www.youtube.com'], getEmbedUrl, canOpen);

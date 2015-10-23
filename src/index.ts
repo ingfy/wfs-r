@@ -1,17 +1,17 @@
 /// <reference path='../typings/tsd.d.ts' />
 
+import * as url from 'url';
+
 import * as types from './types';
 import youtube from './sites/youtube';
+import vimeo from './sites/vimeo';
 
 let availableSites : types.FsSite[] = [
-	youtube
+	youtube,
+	vimeo
 ];
 
 let sites: { [id : string] : types.FsSite; }= {};
-
-function extractDomain(url : string) : string {
-	return url.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[1];
-}
 
 class SiteMatch {
 	tab : chrome.tabs.Tab;
@@ -28,7 +28,7 @@ class SiteMatch {
 }
 
 function findSite(tab : chrome.tabs.Tab) : SiteMatch {
-	var tabDomain = extractDomain(tab.url);
+	var tabDomain = url.parse(tab.url).host;
 	
 	var siteSupports = (site: types.FsSite) => 
 		site.domains.filter(domain => domain == tabDomain).length > 0 &&
