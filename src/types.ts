@@ -1,8 +1,10 @@
 /// <reference path='../typings/tsd.d.ts' />
 
+import {VideoInfo} from './videoInfo';
+
 export interface SiteInformation {
 	url : string,
-	dom? : HTMLElement
+	video? : VideoInfo
 };
 
 export interface FsSite {

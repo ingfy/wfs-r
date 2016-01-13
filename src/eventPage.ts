@@ -5,6 +5,7 @@ import * as url from 'url';
 import * as types from './types';
 import youtube from './sites/youtube';
 import vimeo from './sites/vimeo';
+import {VideoInfo} from './videoInfo';
 
 let availableSites : types.FsSite[] = [
 	youtube,
@@ -22,15 +23,25 @@ class SiteMatch {
 		this.tab = tab;
 	}
 	
+	si(videoInfo? : VideoInfo) {
+		let si : types.SiteInformation = {url : this.tab.url};
+		
+		if (videoInfo) si.video = videoInfo;
+		
+		return si;
+	}
+	
 	open() : void {
-		this.site.openFs({url : this.tab.url}, this.tab);
+		chrome.tabs.sendMessage(this.tab.id, {getVideoInfo: true}, (response) => {
+			this.site.openFs(this.si(response && response.videoInfo), this.tab);	// TODO: what to do for sites without content scripts?
+		});
 	}
 }
 
 function findSite(tab : chrome.tabs.Tab) : SiteMatch {
-	var tabDomain = url.parse(tab.url).host;
+	let tabDomain = url.parse(tab.url).host;
 	
-	var siteSupports = (site: types.FsSite) => 
+	let siteSupports = (site: types.FsSite) => 
 		site.domains.filter(domain => domain == tabDomain).length > 0 &&
 		site.canOpenFs({url: tab.url}, tab);
 	

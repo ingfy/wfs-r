@@ -1,6 +1,6 @@
 {
   "name": "wfs-r",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Full-screen various video sources. Supported: YouTube, Vimeo",
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
     "gulp-util": "^3.0.7",
     "gulp-zip": "^3.0.2",
     "json-pretty": "0.0.1",
+    "merge-stream": "1.0.0",
     "lodash": "^3.10.1",
     "stringify": "^3.1.0",
     "through2": "^2.0.0",

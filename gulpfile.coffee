@@ -8,6 +8,9 @@ fs = require 'fs'
 stream = require 'stream'
 mocha = require 'gulp-mocha' 
 zip = require 'gulp-zip'
+path = require 'path'
+merge = require 'merge-stream'
+domains = require './src/domains.js'
 jsonMerge = require './gulp/gulp-jsonMerge'
 	
 config =
@@ -16,13 +19,18 @@ config =
 		dist: './dist'
 		resources: './resources'
 		source: './src'
-		tests: './test'
+		tests: './test'		
+	dirs:
+		contentScripts: './contentScripts'
 	files:
 		eventPageScript: 'eventPage.js'
-		mainIn: 'index.ts'
+		contentScript: 'contentScript.js'
+		mainIn: 'eventPage.ts'
 		packageJson: 'package.json'
 		manifest: 'manifest.json'
 	sourceMaps: !gutil.env.production
+	
+config.paths.contentScripts = path.join config.paths.source, config.dirs.contentScripts
 
 
 gulp.task 'default', ['test', 'build']
@@ -44,15 +52,37 @@ gulp.task 'test', () ->
 	
 	gulp.src [config.paths.tests + '/**/*.ts'], {read: false}
 		.pipe mocha()
+		
+basename = (filename) ->
+	path.basename filename, path.extname filename
+	
+contentScripts = 
+	({
+		in: script.main, 
+		domain: domains.sites[script.site], 
+		out: script.site + '-' + config.files.contentScript
+		} for script in ({
+			main: path.join(config.dirs.contentScripts, script), 
+			site: basename script
+			} for script in fs.readdirSync config.paths.contentScripts))
 
-gulp.task 'js', () ->
+makeBundle = (main) ->
 	bundler = browserify {basedir: config.paths.source}
-		.add config.files.mainIn
+		.add(main)
 		.plugin tsify
 	
-	bundler.bundle()
-		.pipe source ('./' + config.files.eventPageScript)
+compileJs = (main, out) ->
+	(makeBundle main).bundle()
+		.pipe source ('./' + out)
 		.pipe gulp.dest config.paths.build
+		
+gulp.task 'eventPage', () ->
+	compileJs config.files.mainIn, config.files.eventPageScript
+		
+gulp.task 'contentScripts', () ->
+	merge (compileJs script.in, script.out for script in contentScripts)
+		
+gulp.task 'js', ['contentScripts', 'eventPage']
 
 project = (source, mapping) ->
 	Object
@@ -67,6 +97,12 @@ gulp.task 'manifest', () ->
 		.pipe jsonMerge {
 			background:
 				scripts: [config.files.eventPageScript]
+		}
+		.pipe jsonMerge {
+			content_scripts: ({
+				matches: ['http://' + script.domain + '/*', 'https://' + script.domain + '/*'],
+				js: [script.out]
+			} for script in contentScripts)
 		}
 		.pipe jsonMerge project require('./' + config.files.packageJson), {
 			'description': 'description'

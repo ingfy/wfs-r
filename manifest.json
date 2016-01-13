@@ -15,5 +15,6 @@
 	},
 	"background": {
 		"persistent": false
-	}
+	},
+	"content_scripts": []
 }
