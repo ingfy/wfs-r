@@ -27,4 +27,10 @@ describe('utils', () => {
 			expect(utils.startsWith("bds", "sdb")).to.be.false;
 		});
 	});
+    
+    describe('.endsWith', () => {
+        it('should detect the last part of a string', () => {
+            expect(utils.endsWith("abc", "bc")).to.be.true;
+        });
+    });
 });

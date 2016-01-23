@@ -3,13 +3,16 @@
 import * as url from 'url';
 
 import * as types from './types';
+import {VideoInfo} from './videoInfo';
+
 import youtube from './sites/youtube';
 import vimeo from './sites/vimeo';
-import {VideoInfo} from './videoInfo';
+import twitch from './sites/twitch';
 
 let availableSites : types.FsSite[] = [
 	youtube,
-	vimeo
+	vimeo,
+    twitch
 ];
 
 let sites: { [id : string] : types.FsSite; }= {};

@@ -1,5 +1,5 @@
 /// <reference path='../../typings/tsd.d.ts' />
-/// <reference path='./query-string.d.ts' />
+/// <reference path='../query-string.d.ts' />
 /// <reference path='../domains.d.ts' />
 
 import { parse, stringify } from 'query-string';

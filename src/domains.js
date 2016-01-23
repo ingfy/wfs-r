@@ -1,6 +1,7 @@
 var sites = {
 	youtube: 'www.youtube.com',
-	vimeo: 'www.vimeo.com'
+	vimeo: 'www.vimeo.com',
+    twitch: ['www.twitch.tv', 'twitch.tv']
 };
 
 module.exports = {

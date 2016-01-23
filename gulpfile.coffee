@@ -56,10 +56,12 @@ gulp.task 'test', () ->
 basename = (filename) ->
 	path.basename filename, path.extname filename
 	
+arrayize = (e) -> if (e instanceof Array) then e else [e]
+    
 contentScripts = 
 	({
 		in: script.main, 
-		domain: domains.sites[script.site], 
+		domains: arrayize(domains.sites[script.site]), 
 		out: script.site + '-' + config.files.contentScript
 		} for script in ({
 			main: path.join(config.dirs.contentScripts, script), 
@@ -100,7 +102,9 @@ gulp.task 'manifest', () ->
 		}
 		.pipe jsonMerge {
 			content_scripts: ({
-				matches: ['http://' + script.domain + '/*', 'https://' + script.domain + '/*'],
+				matches: [].concat(
+                    ('http://' + domain + '/*' for domain in script.domains), 
+                    ('https://' + domain + '/*' for domain in script.domains)),
 				js: [script.out]
 			} for script in contentScripts)
 		}
